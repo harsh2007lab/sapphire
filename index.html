@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sapphire — the AI that turns visitors into clients</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep: #0B213B;
+    --sapphire: #1E4D8C;
+    --facet: #3B82D4;
+    --facet-light: #8FC1F2;
+    --gold: #C9A227;
+    --paper: #EEF2F7;
+    --paper-2: #E2E9F2;
+    --ink: #0F1621;
+    --ink-soft: #4C5A6E;
+    --card: #FFFFFF;
+    --nav-bg: rgba(238,242,247,0.85);
+    --heading: var(--deep);
+    --eyebrow-bg: rgba(30,77,140,0.08);
+    color-scheme: light;
+  }
+  html[data-theme="dark"]{
+    --paper: #0A121E;
+    --paper-2: #1B2635;
+    --ink: #E7EEF7;
+    --ink-soft: #94A5BC;
+    --card: #101B29;
+    --nav-bg: rgba(10,18,30,0.85);
+    --heading: #EAF1FB;
+    --eyebrow-bg: rgba(143,193,242,0.14);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+    transition:background .25s ease, color .25s ease;
+  }
+  h1,h2,h3{
+    font-family:'Bricolage Grotesque',sans-serif;
+    font-weight:600;
+    letter-spacing:-0.02em;
+    color:var(--heading);
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .wrap{max-width:1120px; margin:0 auto; padding:0 32px;}
+  a{color:inherit; text-decoration:none;}
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible{outline:2px solid var(--gold); outline-offset:3px;}
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+
+  /* ===== NAV ===== */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:var(--nav-bg);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--paper-2);
+    transition:background .25s ease, border-color .25s ease;
+  }
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:76px; gap:24px;}
+  .logo{display:flex; align-items:center; gap:10px; font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:20px; color:var(--heading);}
+  .logo svg{width:22px; height:22px;}
+  .nav-links{display:flex; gap:36px; font-size:15px; color:var(--ink-soft); margin-right:auto;}
+  .nav-links a:hover{color:var(--sapphire);}
+  .nav-right{display:flex; align-items:center; gap:16px;}
+  .nav-cta{
+    background:var(--deep); color:#fff; padding:10px 22px; border-radius:6px;
+    font-size:14px; font-weight:500; transition:background .15s; display:inline-block;
+  }
+  .nav-cta:hover{background:var(--sapphire);}
+  @media (max-width:760px){ .nav-links{display:none;} }
+
+  .theme-toggle{
+    width:44px; height:26px; border-radius:14px; background:var(--paper-2); border:1px solid transparent;
+    position:relative; cursor:pointer; flex-shrink:0; padding:0;
+  }
+  .theme-toggle .knob{
+    position:absolute; top:2px; left:2px; width:20px; height:20px; border-radius:50%;
+    background:var(--deep); transition:transform .25s ease, background .25s ease;
+    display:flex; align-items:center; justify-content:center;
+  }
+  html[data-theme="dark"] .theme-toggle .knob{ transform:translateX(18px); background:var(--gold); }
+  .theme-toggle .knob svg{width:12px; height:12px; fill:#fff;}
+  .theme-toggle:hover{border-color:var(--sapphire);}
+
+  /* ===== HERO ===== */
+  .hero{position:relative; padding:96px 0 60px; overflow:hidden;}
+  .hero .wrap{position:relative; z-index:2; display:grid; grid-template-columns:1.05fr 0.95fr; gap:48px; align-items:center;}
+  @media (max-width:900px){ .hero .wrap{grid-template-columns:1fr;} }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:0.06em;
+    color:var(--sapphire); background:var(--eyebrow-bg);
+    padding:6px 12px; border-radius:20px; margin-bottom:22px;
+    transition:background .25s ease;
+  }
+  .eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--gold);}
+
+  .hero h1{font-size:clamp(38px,5vw,58px); line-height:1.05; margin-bottom:22px;}
+  .hero h1 em{font-style:normal; color:var(--sapphire); position:relative;}
+  .hero p.sub{font-size:18px; color:var(--ink-soft); max-width:480px; margin-bottom:34px;}
+
+  .hero-cta{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--deep); color:#fff; padding:14px 26px; border-radius:6px;
+    font-weight:500; font-size:15px; border:none; cursor:pointer; transition:transform .15s, background .15s;
+    display:inline-block;
+  }
+  .btn-primary:hover{background:var(--sapphire); transform:translateY(-1px);}
+  .btn-secondary{
+    padding:14px 26px; border-radius:6px; font-weight:500; font-size:15px;
+    border:1px solid var(--paper-2); color:var(--heading); background:transparent; cursor:pointer;
+    display:inline-block;
+  }
+  .btn-secondary:hover{border-color:var(--sapphire); color:var(--sapphire);}
+
+  /* faceted gem — the signature element */
+  .gem-stage{position:relative; height:440px; display:flex; align-items:center; justify-content:center;}
+  .gem-stage svg{width:100%; max-width:420px; height:auto;}
+  .facet{transition:opacity .5s ease, fill .5s ease;}
+  .facet-label{
+    position:absolute; font-family:'IBM Plex Mono',monospace; font-size:11px;
+    color:var(--ink-soft); background:var(--card); padding:4px 9px; border-radius:5px;
+    border:1px solid var(--paper-2); opacity:0; transition:opacity .4s ease, background .25s ease;
+    pointer-events:none; white-space:nowrap;
+  }
+  .facet-label.show{opacity:1;}
+
+  /* ===== SECTION SHARED ===== */
+  section{padding:88px 0;}
+  .section-head{max-width:640px; margin-bottom:56px;}
+  .section-head .kicker{
+    font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--gold); letter-spacing:0.08em; margin-bottom:12px; display:block;
+  }
+  .section-head h2{font-size:clamp(28px,3.4vw,38px); margin-bottom:14px;}
+  .section-head p{color:var(--ink-soft); font-size:17px;}
+
+  /* ===== HOW IT WORKS — flow, real sequence so numbered ===== */
+  .flow{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
+  @media (max-width:900px){ .flow{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .flow{grid-template-columns:1fr;} }
+  .flow-step{
+    background:var(--card); border:1px solid var(--paper-2); border-radius:10px; padding:26px 22px;
+    position:relative; transition:background .25s ease, border-color .25s ease, transform .2s ease;
+  }
+  .flow-step:hover{transform:translateY(-3px);}
+  .flow-step .num{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--gold); margin-bottom:14px; display:block;}
+  .flow-step h3{font-size:17px; margin-bottom:8px;}
+  .flow-step p{font-size:14.5px; color:var(--ink-soft);}
+  .flow-arrow{display:none;}
+  @media (min-width:901px){
+    .flow-step:not(:last-child)::after{
+      content:""; position:absolute; right:-20px; top:50%; transform:translateY(-50%);
+      width:14px; height:1px; background:var(--paper-2);
+    }
+  }
+
+  /* ===== DEMO WIDGET MOCKUP ===== */
+  .demo{background:var(--deep); color:#fff;}
+  .demo .section-head h2, .demo .section-head p{color:#fff;}
+  .demo .section-head p{color:#B9C6D8;}
+  .demo-grid{display:grid; grid-template-columns:0.9fr 1.1fr; gap:56px; align-items:center;}
+  @media (max-width:900px){ .demo-grid{grid-template-columns:1fr;} }
+
+  .controls{display:flex; flex-direction:column; gap:22px;}
+  .control-row{display:flex; align-items:center; gap:14px;}
+  .swatch{
+    width:34px; height:34px; border-radius:8px; cursor:pointer; border:2px solid transparent;
+    transition:border-color .15s;
+  }
+  .swatch.active{border-color:#fff;}
+  .control-label{font-size:13px; color:#93A5BC; font-family:'IBM Plex Mono',monospace;}
+
+  .browser{
+    background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);
+  }
+  .browser-bar{background:#F0F1F3; padding:10px 14px; display:flex; gap:6px;}
+  .browser-bar span{width:10px; height:10px; border-radius:50%; background:#D8DBE0;}
+  .browser-body{height:340px; background:#FAFBFC; position:relative;}
+  .chat-bubble{
+    position:absolute; bottom:20px; right:20px; width:58px; height:58px; border-radius:50%;
+    background:var(--chat-color,#1E4D8C); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 20px rgba(0,0,0,0.18); cursor:pointer;
+  }
+  .chat-bubble svg{width:24px; height:24px; fill:#fff;}
+  .chat-window{
+    position:absolute; bottom:90px; right:20px; width:270px; background:#fff; border-radius:12px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.15); border:1px solid #ECEEF1; overflow:hidden;
+  }
+  .chat-head{background:var(--chat-color,#1E4D8C); color:#fff; padding:14px 16px; font-size:13.5px; font-weight:500;}
+  .chat-body{padding:14px 16px; display:flex; flex-direction:column; gap:8px;}
+  .msg{padding:9px 12px; border-radius:10px; font-size:13px; max-width:85%;}
+  .msg.bot{background:#F1F3F6; color:var(--ink); align-self:flex-start; border-bottom-left-radius:3px;}
+  .msg.visitor{background:var(--chat-color,#1E4D8C); color:#fff; align-self:flex-end; border-bottom-right-radius:3px;}
+
+  /* ===== DASHBOARD PREVIEW ===== */
+  .dash-mock{
+    background:var(--card); border:1px solid var(--paper-2); border-radius:12px; padding:0; overflow:hidden;
+    box-shadow:0 24px 50px -24px rgba(11,33,59,0.25); transition:background .25s ease, border-color .25s ease;
+  }
+  .dash-top{display:flex; border-bottom:1px solid var(--paper-2);}
+  .dash-tab{padding:14px 20px; font-size:13.5px; color:var(--ink-soft); border-bottom:2px solid transparent;}
+  .dash-tab.active{color:var(--heading); border-bottom-color:var(--gold); font-weight:500;}
+  .dash-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--paper-2);}
+  .stat{background:var(--card); padding:24px; text-align:left;}
+  .stat .val{font-family:'Bricolage Grotesque',sans-serif; font-size:30px; font-weight:600; color:var(--heading);}
+  .stat .lbl{font-size:12.5px; color:var(--ink-soft); font-family:'IBM Plex Mono',monospace; margin-top:4px;}
+  .lead-row{display:flex; justify-content:space-between; padding:14px 24px; border-top:1px solid var(--paper-2); font-size:13.5px;}
+  .lead-row .em{color:var(--ink);}
+  .status-pill{font-size:11.5px; padding:3px 9px; border-radius:20px; font-family:'IBM Plex Mono',monospace;}
+  .status-pill.converted{background:rgba(201,162,39,0.14); color:#8a6c14;}
+  .status-pill.engaged{background:rgba(30,77,140,0.1); color:var(--sapphire);}
+  .status-pill.new{background:#F1F3F6; color:var(--ink-soft);}
+
+  /* ===== PRINCIPLES ===== */
+  .principles{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--paper-2); border:1px solid var(--paper-2); border-radius:12px; overflow:hidden;}
+  @media (max-width:760px){ .principles{grid-template-columns:1fr;} }
+  .principle{background:var(--card); padding:32px 28px; transition:background .25s ease;}
+  .principle h3{font-size:16px; margin-bottom:10px;}
+  .principle p{font-size:14px; color:var(--ink-soft);}
+
+  /* ===== CTA ===== */
+  .cta-section{text-align:center;}
+  .cta-section h2{font-size:clamp(30px,4vw,44px); max-width:640px; margin:0 auto 18px;}
+  .cta-section p{color:var(--ink-soft); font-size:17px; max-width:480px; margin:0 auto 34px;}
+
+  footer{border-top:1px solid var(--paper-2); padding:40px 0; font-size:13.5px; color:var(--ink-soft);}
+  footer .wrap{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="logo">
+      <svg viewBox="0 0 24 24"><polygon points="12,1 22,8 18,23 6,23 2,8" fill="none" stroke="#1E4D8C" stroke-width="1.6"/><polygon points="12,1 22,8 12,12" fill="#3B82D4" opacity="0.85"/><polygon points="12,1 2,8 12,12" fill="#1E4D8C" opacity="0.85"/></svg>
+      Sapphire
+    </div>
+    <div class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#demo">Live demo</a>
+      <a href="#dashboard">Dashboard</a>
+      <a href="#principles">Why it converts</a>
+    </div>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" aria-pressed="false">
+        <span class="knob">
+          <svg id="themeIcon" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.4 5.4 0 0 1-7.54-7.54A9 9 0 0 0 12 3z"/></svg>
+        </span>
+      </button>
+      <a href="https://calendly.com/your-sapphire-link/demo" target="_blank" rel="noopener" class="nav-cta">Book a demo</a>
+    </div>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow"><span class="dot"></span> Built for one job: turning visitors into leads</span>
+      <h1>Every visitor is<br><em>one conversation</em><br>from becoming a client.</h1>
+      <p class="sub">Sapphire is a chat widget that studies how people actually decide to buy — then has that conversation on your website, for every visitor, at once.</p>
+      <div class="hero-cta">
+        <a href="https://calendly.com/your-sapphire-link/demo" target="_blank" rel="noopener" class="btn-primary">Book a live demo</a>
+        <a href="#demo" class="btn-secondary">See it in action ↓</a>
+      </div>
+    </div>
+
+    <div class="gem-stage">
+      <svg viewBox="0 0 300 320" id="gem">
+        <polygon class="facet" id="f1" points="150,10 210,80 150,150 90,80" fill="#3B82D4" opacity="0.55"/>
+        <polygon class="facet" id="f2" points="90,80 150,150 90,220 40,150" fill="#1E4D8C" opacity="0.65"/>
+        <polygon class="facet" id="f3" points="210,80 260,150 150,150" fill="#2C5FA0" opacity="0.6"/>
+        <polygon class="facet" id="f4" points="150,150 260,150 210,220 150,220" fill="#3B82D4" opacity="0.45"/>
+        <polygon class="facet" id="f5" points="150,150 150,220 90,220 40,150" fill="#8FC1F2" opacity="0.5"/>
+        <polygon class="facet" id="f6" points="90,220 150,220 150,300 120,280" fill="#1E4D8C" opacity="0.7"/>
+        <polygon class="facet" id="f7" points="150,220 210,220 180,300 150,300" fill="#3B82D4" opacity="0.6"/>
+        <polygon points="150,10 210,80 260,150 210,220 180,300 120,280 90,220 40,150 90,80" fill="none" stroke="#0B213B" stroke-width="1.2" opacity="0.3"/>
+      </svg>
+      <div class="facet-label" id="lbl1" style="top:14%; left:52%;">greets & builds trust</div>
+      <div class="facet-label" id="lbl2" style="top:38%; left:8%;">asks what they need</div>
+      <div class="facet-label" id="lbl3" style="top:38%; left:70%;">shares social proof</div>
+      <div class="facet-label" id="lbl4" style="top:58%; left:60%;">handles objections</div>
+      <div class="facet-label" id="lbl5" style="top:58%; left:6%;">real, limited offers</div>
+      <div class="facet-label" id="lbl6" style="top:82%; left:20%;">captures the email</div>
+      <div class="facet-label" id="lbl7" style="top:82%; left:56%;">converts to a lead</div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">the mechanics</span>
+      <h2>One widget. One backend. One dashboard.</h2>
+      <p>Sapphire is three simple parts working together — nothing you need to manage separately.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <span class="num">01</span>
+        <h3>Visitor arrives</h3>
+        <p>Sapphire loads quietly in the corner of your site — themed to match your brand, not a foreign pop-up.</p>
+      </div>
+      <div class="flow-step">
+        <span class="num">02</span>
+        <h3>A real conversation starts</h3>
+        <p>Sapphire asks what they're looking for before it ever pitches anything.</p>
+      </div>
+      <div class="flow-step">
+        <span class="num">03</span>
+        <h3>The lead is captured</h3>
+        <p>Email, intent, and the full transcript land in your dashboard the moment they're given.</p>
+      </div>
+      <div class="flow-step">
+        <span class="num">04</span>
+        <h3>You follow up, or Sapphire does</h3>
+        <p>High-intent visitors can be handed to a real person automatically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="demo" id="demo">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">see it, don't just read it</span>
+      <h2>It wears your colors, not ours</h2>
+      <p>Pick a theme below — this is exactly how Sapphire looks once it's on your site.</p>
+    </div>
+    <div class="demo-grid">
+      <div class="controls">
+        <div class="control-row">
+          <div class="swatch active" style="background:#1E4D8C" data-color="#1E4D8C"></div>
+          <div class="swatch" style="background:#1D9E75" data-color="#1D9E75"></div>
+          <div class="swatch" style="background:#D85A30" data-color="#D85A30"></div>
+          <div class="swatch" style="background:#993556" data-color="#993556"></div>
+          <span class="control-label">brand color</span>
+        </div>
+        <p style="color:#B9C6D8; font-size:14.5px; max-width:340px;">Every client sets their own primary color once in the dashboard. Sapphire applies it everywhere — bubble, header, and messages — automatically.</p>
+      </div>
+      <div class="browser">
+        <div class="browser-bar"><span></span><span></span><span></span></div>
+        <div class="browser-body">
+          <div class="chat-window">
+            <div class="chat-head" id="chatHead">Acme Studio</div>
+            <div class="chat-body">
+              <div class="msg bot">Hey! Looking for something specific today, or just exploring?</div>
+              <div class="msg visitor" id="chatVisitor">Just checking prices</div>
+              <div class="msg bot">Happy to help — what are you hoping to get done?</div>
+            </div>
+          </div>
+          <div class="chat-bubble" id="chatBubble">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16v12H7l-3 3z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="dashboard">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">for the business owner</span>
+      <h2>Every conversation, visible the moment it happens</h2>
+      <p>No exporting logs, no guessing what visitors asked. It's all live.</p>
+    </div>
+    <div class="dash-mock">
+      <div class="dash-top">
+        <div class="dash-tab active">Leads</div>
+        <div class="dash-tab">Conversations</div>
+        <div class="dash-tab">Analytics</div>
+        <div class="dash-tab">Configure</div>
+      </div>
+      <div class="dash-stats">
+        <div class="stat"><div class="val">1,204</div><div class="lbl">conversations this month</div></div>
+        <div class="stat"><div class="val">318</div><div class="lbl">leads captured</div></div>
+        <div class="stat"><div class="val">26%</div><div class="lbl">conversion rate</div></div>
+      </div>
+      <div class="lead-row"><span class="em">jordan@brightside.co</span><span class="status-pill converted">converted</span></div>
+      <div class="lead-row"><span class="em">m.tran@outlook.com</span><span class="status-pill engaged">engaged</span></div>
+      <div class="lead-row"><span class="em">hello@parkstudio.io</span><span class="status-pill new">new</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="principles">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">why it actually converts</span>
+      <h2>Built on how people decide, not just what they ask</h2>
+      <p>Every reply follows the same discipline a good salesperson does.</p>
+    </div>
+    <div class="principles">
+      <div class="principle">
+        <h3>Qualify before pitching</h3>
+        <p>Sapphire asks what someone needs before recommending anything — it never opens with a sales pitch.</p>
+      </div>
+      <div class="principle">
+        <h3>Real urgency only</h3>
+        <p>Scarcity and offers are pulled from what you actually configure — never a fake countdown.</p>
+      </div>
+      <div class="principle">
+        <h3>Escalating commitment</h3>
+        <p>Small yes, then a bigger one: an email first, a call or purchase only once trust is there.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="wrap">
+    <h2>Your visitors are already having this conversation in their head.</h2>
+    <p>Sapphire just makes sure someone's there to answer.</p>
+    <a href="https://calendly.com/your-sapphire-link/demo" target="_blank" rel="noopener" class="btn-primary">Book a live demo</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="logo" style="font-size:16px;">Sapphire</div>
+    <span>Made for businesses who'd rather talk to visitors than lose them.</span>
+  </div>
+</footer>
+
+<script>
+  // Gem facet labels: cycle through highlighting each stage of the conversation
+  const facets = ['f1','f2','f3','f4','f5','f6','f7'];
+  const labels = ['lbl1','lbl2','lbl3','lbl4','lbl5','lbl6','lbl7'];
+  let idx = 0;
+  function cycleFacets(){
+    facets.forEach((id,i)=>{
+      const el = document.getElementById(id);
+      const lbl = document.getElementById(labels[i]);
+      if(i === idx){ el.style.opacity = '0.95'; lbl.classList.add('show'); }
+      else { el.style.opacity = el.getAttribute('opacity_base') || el.getAttribute('opacity'); lbl.classList.remove('show'); }
+    });
+    idx = (idx+1) % facets.length;
+  }
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!prefersReduced){ setInterval(cycleFacets, 1600); cycleFacets(); }
+
+  // Dark mode toggle — defaults to the visitor's system preference
+  const root = document.documentElement;
+  const toggleBtn = document.getElementById('themeToggle');
+  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let isDark = systemDark;
+  function applyTheme(){
+    root.setAttribute('data-theme', isDark ? 'dark' : 'light');
+    toggleBtn.setAttribute('aria-pressed', String(isDark));
+  }
+  applyTheme();
+  toggleBtn.addEventListener('click', ()=>{
+    isDark = !isDark;
+    applyTheme();
+  });
+
+  // Scroll reveal for section headers and cards
+  if(!prefersReduced && 'IntersectionObserver' in window){
+    const revealTargets = document.querySelectorAll('.section-head, .flow-step, .principle, .dash-mock, .browser');
+    revealTargets.forEach(el=>{
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(14px)';
+      el.style.transition = 'opacity .6s ease, transform .6s ease';
+    });
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealTargets.forEach(el=>io.observe(el));
+  }
+
+  // Demo widget theme switcher
+  const swatches = document.querySelectorAll('.swatch');
+  const chatHead = document.getElementById('chatHead');
+  const chatVisitor = document.getElementById('chatVisitor');
+  const chatBubble = document.getElementById('chatBubble');
+  swatches.forEach(s=>{
+    s.addEventListener('click', ()=>{
+      swatches.forEach(x=>x.classList.remove('active'));
+      s.classList.add('active');
+      const c = s.getAttribute('data-color');
+      chatHead.style.background = c;
+      chatVisitor.style.background = c;
+      chatBubble.style.background = c;
+    });
+  });
+</script>
+
+</body>
+</html>
